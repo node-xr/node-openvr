@@ -2,18 +2,47 @@
   "name": "node-openvr",
   "version": "0.1.0",
   "description": "Node bindings to OpenVR through node-glfw",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "homepage": "https://github.com/psigen/node-openvr#readme",
+  "license": "MIT",
+  "keywords": [
+    "glfw",
+    "opengl",
+    "openvr",
+    "vr",
+    "3d",
+    "graphics"
+  ],
+  "author": "Pras Velagapudi <psigen@gmail.com>",
+  "maintainers": [
+    {
+      "name": "Pras Velagapudi",
+      "email": "psigen@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/psigen/node-openvr.git"
   },
-  "author": "Pras Velagapudi <psigen@gmail.com>",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/psigen/node-openvr/issues"
   },
-  "homepage": "https://github.com/psigen/node-openvr#readme"
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "directories": {
+    "src": "src",
+    "lib": "lib",
+    "test": "test"
+  },
+  "engines": {
+    "node": ">=3.0.0"
+  },
+  "scripts": {
+    "install": "node-gyp rebuild"
+  },
+  "dependencies": {
+    "bindings": "^1.2.1",
+    "nan": "^2.1.0"
+  }
 }
