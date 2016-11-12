@@ -31,7 +31,7 @@
         }],
         ['OS=="win"', {
           'library_dirs': ['./deps/openvr/lib/win64'],
-          'libraries': ['openvr_api.lib']
+          'libraries': ['openvr_api.lib'],
           'defines' : ['WIN32_LEAN_AND_MEAN', 'VC_EXTRALEAN'],
           'msvs_settings' : {
             'VCCLCompilerTool' : {
