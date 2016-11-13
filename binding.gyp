@@ -14,7 +14,7 @@
         'VERSION=0.4.6',
       ],
       'sources': [
-        'src/openvr.cpp'
+        'src/bindings.cpp'
       ],
       'include_dirs': [
         "<!(node -e \"require('nan')\")",
