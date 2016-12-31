@@ -30,7 +30,7 @@
   "scripts": {
     "install": "node-gyp rebuild",
     "lint": "eslint .",
-    "test": "node ./test/test_index.js"
+    "test": "mocha"
   },
   "directories": {
     "src": "src",
@@ -49,8 +49,6 @@
     "babel-eslint": "^7.1.0",
     "eslint": "^3.10.0",
     "eslint-config-airbnb": "^13.0.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^2.2.3",
-    "eslint-plugin-react": "^6.6.0"
+    "mocha": "^3.2.0"
   }
 }
