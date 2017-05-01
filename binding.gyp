@@ -14,7 +14,8 @@
         'VERSION=0.4.6',
       ],
       'sources': [
-        'src/bindings.cpp'
+        'src/bindings.cpp',
+        'src/openvr.cpp'
       ],
       'include_dirs': [
         "<!(node -e \"require('nan')\")",
@@ -23,11 +24,25 @@
       'conditions': [
         ['OS=="linux"', {
           'library_dirs': ['./deps/openvr/lib/linux64'],
-          'libraries': ['libopenvr_api.so']
+          'libraries': ['libopenvr_api.so'],
+          'copies':
+          [
+            {
+              'destination': '<(module_root_dir)/build/Release',
+              'files': ['<(module_root_dir)/deps/openvr/bin/linux64/libopenvr_api.so']
+            }
+          ],
         }],
         ['OS=="mac"', {
           'library_dirs': ['./deps/openvr/lib/osx32'],
-          'libraries': ['libopenvr_api.dylib']
+          'libraries': ['libopenvr_api.dylib'],
+          'copies':
+          [
+            {
+              'destination': '<(module_root_dir)/build/Release',
+              'files': ['<(module_root_dir)/deps/openvr/bin/osx32/libopenvr_api.dylib']
+            }
+          ],
         }],
         ['OS=="win"', {
           'library_dirs': ['./deps/openvr/lib/win64'],
@@ -41,6 +56,13 @@
               'AdditionalOptions' : ['/OPT:REF','/OPT:ICF','/LTCG']
             },
           },
+          'copies':
+          [
+            {
+              'destination': '<(module_root_dir)/build/Release',
+              'files': ['<(module_root_dir)/deps/openvr/bin/win64/openvr_api.dll']
+            }
+          ],
         }],
       ],
     }

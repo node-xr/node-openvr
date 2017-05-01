@@ -1,12 +1,13 @@
-#include <node.h>
+#include "openvr.h"
+
 #include <nan.h>
-#include <v8.h>
 
-NAN_METHOD(nothing) {
-  // Do nothing.
+void Initialize(v8::Local<v8::Object> exports) {
+  exports->Set(Nan::New("VR_Init").ToLocalChecked(),
+               Nan::New<v8::FunctionTemplate>(VR_Init)->GetFunction());
+  exports->Set(Nan::New("VR_Shutdown").ToLocalChecked(),
+               Nan::New<v8::FunctionTemplate>(VR_Shutdown)->GetFunction());
+  //IVRSystem::Init(exports);
 }
 
-NAN_MODULE_INIT(Init) {
-}
-
-NODE_MODULE(openvr, Init);
+NODE_MODULE(openvr, Initialize);

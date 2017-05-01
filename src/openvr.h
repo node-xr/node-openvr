@@ -1,10 +1,9 @@
-#include <node.h>
+#ifndef NODE_OPENVR_H
+#define NODE_OPENVR_H
+
 #include <nan.h>
-#include <v8.h>
 
-NAN_METHOD(nothing);
+NAN_METHOD(VR_Init);
+NAN_METHOD(VR_Shutdown);
 
-NAN_MODULE_INIT(Init) {
-}
-
-NODE_MODULE(openvr, Init);
+#endif // NODE_OPENVR_H
