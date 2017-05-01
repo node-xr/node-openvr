@@ -13,6 +13,10 @@
       'defines': [
         'VERSION=0.4.6',
       ],
+      'cflags': [
+        '-std=c++11',
+        '-stdlib=libc++'
+      ],
       'sources': [
         'src/bindings.cpp',
         'src/openvr.cpp'
