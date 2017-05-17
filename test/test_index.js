@@ -51,4 +51,19 @@ describe('IVRSystem', () => {
       expect(result['bottom']).to.be.a('number');
     });
   });
+
+  describe('#ComputeDistortion', () => {
+    it('should return a pair of numbers for each RGB.', () => {
+      const result = ivrsystem.ComputeDistortion(
+        openvr.EVREye.Eye_Left, 0.5, 0.5);
+
+      expect(result['red']).to.have.lengthOf(2);
+      expect(result['green']).to.have.lengthOf(2);
+      expect(result['blue']).to.have.lengthOf(2);
+
+      expect(result['red'][0]).to.be.a('number');
+      expect(result['green'][0]).to.be.a('number');
+      expect(result['blue'][0]).to.be.a('number');
+    });
+  });
 });

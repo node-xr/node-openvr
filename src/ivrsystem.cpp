@@ -22,7 +22,7 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "GetRecommendedRenderTargetSize", GetRecommendedRenderTargetSize);
   Nan::SetPrototypeMethod(tpl, "GetProjectionMatrix", GetProjectionMatrix);
   Nan::SetPrototypeMethod(tpl, "GetProjectionRaw", GetProjectionRaw);
-  /// virtual bool ComputeDistortion( EVREye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates ) = 0;
+  Nan::SetPrototypeMethod(tpl, "ComputeDistortion", ComputeDistortion);
   ///	virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
   /// virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
   /// virtual int32_t GetD3D9AdapterIndex() = 0;
@@ -222,6 +222,52 @@ NAN_METHOD(IVRSystem::GetProjectionRaw)
     Nan::Set(result, bottom_prop, Nan::New<Number>(fBottom));
   }
   info.GetReturnValue().Set(result);
+}
+
+//=============================================================================
+/// virtual DistortionCoordinates_t ComputeDistortion( EVREye eEye, float fU, float fV ) = 0;
+NAN_METHOD(IVRSystem::ComputeDistortion)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 3)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number (EVREye).");
+    return;
+  }
+
+  uint32_t nEye = info[0]->Uint32Value();
+  if (nEye >= 2)
+  {
+    Nan::ThrowTypeError("Argument[0] was out of enum range (EVREye).");
+    return;
+  }
+
+  if (!info[1]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[1] must be a number.");
+    return;
+  }
+
+  if (!info[2]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[2] must be a number.");
+    return;
+  }
+
+  vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
+  float fU = static_cast<float>(info[1]->NumberValue());
+  float fV = static_cast<float>(info[2]->NumberValue());
+  vr::DistortionCoordinates_t distortionCoordinates =
+    obj->self_->ComputeDistortion(eEye, fU, fV);
+
+  info.GetReturnValue().Set(convert(distortionCoordinates));
 }
 
 //=============================================================================
