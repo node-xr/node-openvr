@@ -6,44 +6,53 @@
 #include <v8.h>
 
 /// inline IVRSystem *VR_Init( EVRInitError *peError, EVRApplicationType eApplicationType );
-NAN_METHOD(VR_Init) {
-  if (info.Length() != 2) {
-    Nan::ThrowTypeError("Wrong number of arguments.");
+NAN_METHOD(VR_Init)
+{
+  if (info.Length() != 1)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
     return;
   }
 
-  if (!info[0]->IsNumber()) {
-    Nan::ThrowTypeError("Argument[0] must be a number (EVRInitError).");
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number (EVRApplicationType).");
     return;
   }
 
-  if (!info[1]->IsNumber()) {
-    Nan::ThrowTypeError("Argument[1] must be a number (EVRApplicationType).");
+  uint32_t applicationType = info[0]->Uint32Value();
+  // TODO: is there a better way to do this?
+  constexpr uint32_t applicationTypeMax = vr::VRApplication_Max;
+  if (applicationType >= applicationTypeMax)
+  {
+    Nan::ThrowTypeError("Argument[0] was out of enum range (EVRApplicationType).");
     return;
   }
 
-  uint32_t applicationType = info[1]->Uint32Value();
-  // TODO: correctly compiling check for enum out-of-range.
-  /*
-  if (applicationType >= static_cast<uint32_t>(vr::EVRApplicationType::VRApplication_MAX)) {
-    Nan::ThrowTypeError("Argument[1] was out of range (EVRApplicationType).");
-    return;
-  }
-  */
-
+  // Perform the actual wrapped call.
   vr::EVRInitError error;
   vr::IVRSystem *system = vr::VR_Init(
     &error,
     static_cast<vr::EVRApplicationType>(applicationType)
   );
 
-  auto message = Nan::New<v8::String>("I'm a Node Hero!").ToLocalChecked();
-  info.GetReturnValue().Set(message);
+  // If the VR system failed to initialize, immediately raise a node exception.
+  if (system == nullptr)
+  {
+    Nan::ThrowError(VR_GetVRInitErrorAsSymbol(error));
+    return;
+  }
+
+  // Wrap the resulting system in the correct wrapper and return it.
+  auto result = IVRSystem::NewInstance(system);
+  info.GetReturnValue().Set(result);
 }
 
 /// inline IVRSystem *VR_Init( EVRInitError *peError, EVRApplicationType eApplicationType );
-NAN_METHOD(VR_Shutdown) {
-  if (info.Length() != 0) {
+NAN_METHOD(VR_Shutdown)
+{
+  if (info.Length() != 0)
+  {
     Nan::ThrowTypeError("Wrong number of arguments.");
     return;
   }
