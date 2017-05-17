@@ -1,19 +1,22 @@
-const assert = require('assert');
+const chai = require('chai');
+const dirtyChai = require('dirty-chai');
 const expect = require('chai').expect;
 const openvr = require('../index');
+
+chai.use(dirtyChai);
 
 describe('openvr', () => {
   describe('#VR_Init()', () => {
     it('should return an IVRSystem.', () => {
       const system = openvr.VR_Init(openvr.EVRApplicationType.VRApplication_Utility);
-      expect(system).to.not.be.undefined;
+      expect(system).to.be.ok();
       openvr.VR_Shutdown();
     });
   });
 });
 
 describe('IVRSystem', () => {
-  var ivrsystem;
+  let ivrsystem;
   before(() => {
     ivrsystem = openvr.VR_Init(openvr.EVRApplicationType.VRApplication_Utility);
   });
@@ -45,10 +48,10 @@ describe('IVRSystem', () => {
     it('should return a map of bounds in each direction.', () => {
       const result = ivrsystem.GetProjectionRaw(openvr.EVREye.Eye_Left);
 
-      expect(result['left']).to.be.a('number');
-      expect(result['right']).to.be.a('number');
-      expect(result['top']).to.be.a('number');
-      expect(result['bottom']).to.be.a('number');
+      expect(result.left).to.be.a('number');
+      expect(result.right).to.be.a('number');
+      expect(result.top).to.be.a('number');
+      expect(result.bottom).to.be.a('number');
     });
   });
 
@@ -57,13 +60,13 @@ describe('IVRSystem', () => {
       const result = ivrsystem.ComputeDistortion(
         openvr.EVREye.Eye_Left, 0.5, 0.5);
 
-      expect(result['red']).to.have.lengthOf(2);
-      expect(result['green']).to.have.lengthOf(2);
-      expect(result['blue']).to.have.lengthOf(2);
+      expect(result.red).to.have.lengthOf(2);
+      expect(result.green).to.have.lengthOf(2);
+      expect(result.blue).to.have.lengthOf(2);
 
-      expect(result['red'][0]).to.be.a('number');
-      expect(result['green'][0]).to.be.a('number');
-      expect(result['blue'][0]).to.be.a('number');
+      expect(result.red[0]).to.be.a('number');
+      expect(result.green[0]).to.be.a('number');
+      expect(result.blue[0]).to.be.a('number');
     });
   });
 });
