@@ -21,7 +21,7 @@ public:
 
 private:
   explicit IVRSystem(vr::IVRSystem *self);
-  ~IVRSystem();
+  ~IVRSystem() = default;
 
   // Node construction method for new instances.
   static NAN_METHOD(New);
@@ -74,7 +74,11 @@ private:
   /// virtual void AcknowledgeQuit_UserPrompt() = 0;
 
   /// Create a singleton reference to a constructor function.
-  static inline Nan::Persistent<v8::Function>& constructor();
+  static inline Nan::Persistent<v8::Function>& constructor()
+  {
+    static Nan::Persistent<v8::Function> the_constructor;
+    return the_constructor;
+  }
 
   /// Reference to wrapped OpenVR instance.
   vr::IVRSystem * const self_;

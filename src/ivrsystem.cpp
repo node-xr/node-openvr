@@ -9,7 +9,7 @@ using namespace v8;
 NAN_MODULE_INIT(IVRSystem::Init)
 {
   // Create a function template that is called in JS to create this wrapper.
-  v8::Local<v8::FunctionTemplate> tpl = Nan::New<v8::FunctionTemplate>(New);
+  Local<FunctionTemplate> tpl = Nan::New<FunctionTemplate>(New);
 
   // Declare human-readable name for this wrapper.
   tpl->SetClassName(Nan::New("IVRSystem").ToLocalChecked());
@@ -70,10 +70,10 @@ NAN_MODULE_INIT(IVRSystem::Init)
 //=============================================================================
 Local<Object> IVRSystem::NewInstance(vr::IVRSystem *system)
 {
-  v8::Local<v8::Function> cons = Nan::New(constructor());
-  const int argc = 1;
-  Local<Value> argv[argc] = { Nan::New<v8::External>(system) };
-  return Nan::NewInstance(cons, argc, argv).ToLocalChecked();
+  Nan::EscapableHandleScope scope;
+  Local<Function> cons = Nan::New(constructor());
+  Local<Value> argv[1] = { Nan::New<External>(system) };
+  return scope.Escape(Nan::NewInstance(cons, 1, argv).ToLocalChecked());
 }
 
 //=============================================================================
@@ -110,7 +110,7 @@ NAN_METHOD(IVRSystem::GetRecommendedRenderTargetSize)
 
   Local<Object> result = Nan::New<Object>();
   {
-    Local<v8::String> width_prop = Nan::New<String>("width").ToLocalChecked();
+    Local<String> width_prop = Nan::New<String>("width").ToLocalChecked();
     Nan::Set(result, width_prop, Nan::New<Number>(width));
 
     Local<String> height_prop = Nan::New<String>("height").ToLocalChecked();
@@ -124,17 +124,4 @@ IVRSystem::IVRSystem(vr::IVRSystem *self)
 : self_(self)
 {
   // Do nothing.
-}
-
-//=============================================================================
-IVRSystem::~IVRSystem()
-{
-  // Do nothing.
-}
-
-//=============================================================================
-Nan::Persistent<v8::Function>& IVRSystem::constructor()
-{
-  static Nan::Persistent<v8::Function> the_constructor;
-  return the_constructor;
 }
