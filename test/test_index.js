@@ -1,11 +1,12 @@
 const assert = require('assert');
+const expect = require('chai').expect;
 const openvr = require('../index');
 
 describe('openvr', () => {
   describe('#VR_Init()', () => {
     it('should return an IVRSystem.', () => {
       const system = openvr.VR_Init(openvr.EVRApplicationType.VRApplication_Utility);
-      assert.ok(system);
+      expect(system).to.not.be.undefined;
       openvr.VR_Shutdown();
     });
   });
@@ -21,10 +22,10 @@ describe('IVRSystem', () => {
   });
 
   describe('#GetRecommendedRenderTargetSize', () => {
-    it('should return a width and height.', () => {
+    it('should return an integer width and height.', () => {
       const result = ivrsystem.GetRecommendedRenderTargetSize();
-      assert.ok(result.width);
-      assert.ok(result.height);
+      expect(result.width).to.satisfy(Number.isInteger);
+      expect(result.height).to.satisfy(Number.isInteger);
     });
   });
 });
