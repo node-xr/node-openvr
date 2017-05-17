@@ -3,8 +3,10 @@ const openvr = require('../index');
 
 describe('openvr', function() {
   describe('#VR_Init()', function() {
-    it('should do something useful???', function() {
-      assert.equal(-1, [1,2,3].indexOf(4));
+    it('should return an IVRSystem.', function() {
+      const system = openvr.VR_Init(openvr.EVRApplicationType.VRApplication_Utility);
+      assert.ok(system);
+      openvr.VR_Shutdown();
     });
   });
 });
