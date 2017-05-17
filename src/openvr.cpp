@@ -5,7 +5,8 @@
 #include <openvr.h>
 #include <v8.h>
 
-/// inline IVRSystem *VR_Init( EVRInitError *peError, EVRApplicationType eApplicationType );
+//=============================================================================
+// inline IVRSystem *VR_Init( EVRInitError *peError, EVRApplicationType eApplicationType );
 NAN_METHOD(VR_Init)
 {
   if (info.Length() != 1)
@@ -48,7 +49,8 @@ NAN_METHOD(VR_Init)
   info.GetReturnValue().Set(result);
 }
 
-/// inline IVRSystem *VR_Init( EVRInitError *peError, EVRApplicationType eApplicationType );
+//=============================================================================
+// inline IVRSystem *VR_Init( EVRInitError *peError, EVRApplicationType eApplicationType );
 NAN_METHOD(VR_Shutdown)
 {
   if (info.Length() != 0)

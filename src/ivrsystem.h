@@ -38,7 +38,7 @@ private:
   /// virtual DistortionCoordinates_t ComputeDistortion( EVREye eEye, float fU, float fV ) = 0;
   static NAN_METHOD(ComputeDistortion);
 
-  ///	virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
+  /// virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
   /// virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
   /// virtual int32_t GetD3D9AdapterIndex() = 0;
   /// virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
@@ -65,9 +65,9 @@ private:
   /// virtual bool PollNextEvent( VREvent_t *pEvent, uint32_t uncbVREvent ) = 0;
   /// virtual bool PollNextEventWithPose( ETrackingUniverseOrigin eOrigin, VREvent_t *pEvent, uint32_t uncbVREvent, vr::TrackedDevicePose_t *pTrackedDevicePose ) = 0;
   /// virtual const char *GetEventTypeNameFromEnum( EVREventType eType ) = 0;
-  /// virtual HiddenAreaMesh_t GetHiddenAreaMesh( EVREye eEye, EHiddenAreaMeshType type = k_eHiddenAreaMesh_Standard ) = 0;
-  /// virtual bool GetControllerState( vr::TrackedDeviceIndex_t unControllerDeviceIndex, vr::VRControllerState_t *pControllerState, uint32_t unControllerStateSize ) = 0;
-  /// virtual bool GetControllerStateWithPose( ETrackingUniverseOrigin eOrigin, vr::TrackedDeviceIndex_t unControllerDeviceIndex, vr::VRControllerState_t *pControllerState, uint32_t unControllerStateSize, TrackedDevicePose_t *pTrackedDevicePose ) = 0;
+  /// virtual HiddenAreaMesh_t GetHiddenAreaMesh( EVREye eEye ) = 0;
+  /// virtual bool GetControllerState( vr::TrackedDeviceIndex_t unControllerDeviceIndex, vr::VRControllerState_t *pControllerState ) = 0;
+  /// virtual bool GetControllerStateWithPose( ETrackingUniverseOrigin eOrigin, vr::TrackedDeviceIndex_t unControllerDeviceIndex, vr::VRControllerState_t *pControllerState, TrackedDevicePose_t *pTrackedDevicePose ) = 0;
   /// virtual void TriggerHapticPulse( vr::TrackedDeviceIndex_t unControllerDeviceIndex, uint32_t unAxisId, unsigned short usDurationMicroSec ) = 0;
   /// virtual const char *GetButtonIdNameFromEnum( EVRButtonId eButtonId ) = 0;
   /// virtual const char *GetControllerAxisTypeNameFromEnum( EVRControllerAxisType eAxisType ) = 0;
