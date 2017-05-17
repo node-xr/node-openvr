@@ -33,6 +33,8 @@ private:
   static NAN_METHOD(GetProjectionMatrix);
 
   /// virtual void GetProjectionRaw( EVREye eEye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom ) = 0;
+  static NAN_METHOD(GetProjectionRaw);
+
   /// virtual bool ComputeDistortion( EVREye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates ) = 0;
   ///	virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
   /// virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;

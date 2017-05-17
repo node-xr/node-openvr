@@ -40,4 +40,15 @@ describe('IVRSystem', () => {
       expect(result[0][0]).to.be.a('number');
     });
   });
+
+  describe('#GetProjectionRaw', () => {
+    it('should return a map of bounds in each direction.', () => {
+      const result = ivrsystem.GetProjectionRaw(openvr.EVREye.Eye_Left);
+
+      expect(result['left']).to.be.a('number');
+      expect(result['right']).to.be.a('number');
+      expect(result['top']).to.be.a('number');
+      expect(result['bottom']).to.be.a('number');
+    });
+  });
 });

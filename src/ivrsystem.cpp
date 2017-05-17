@@ -21,8 +21,7 @@ NAN_MODULE_INIT(IVRSystem::Init)
   // Assign all the wrapped methods of this object.
   Nan::SetPrototypeMethod(tpl, "GetRecommendedRenderTargetSize", GetRecommendedRenderTargetSize);
   Nan::SetPrototypeMethod(tpl, "GetProjectionMatrix", GetProjectionMatrix);
-  /// virtual HmdMatrix44_t GetProjectionMatrix( EVREye eEye, float fNearZ, float fFarZ ) = 0;
-  /// virtual void GetProjectionRaw( EVREye eEye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom ) = 0;
+  Nan::SetPrototypeMethod(tpl, "GetProjectionRaw", GetProjectionRaw);
   /// virtual bool ComputeDistortion( EVREye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates ) = 0;
   ///	virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
   /// virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
@@ -106,8 +105,7 @@ NAN_METHOD(IVRSystem::GetRecommendedRenderTargetSize)
 {
   IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
 
-  uint32_t nWidth;
-  uint32_t nHeight;
+  uint32_t nWidth, nHeight;
   obj->self_->GetRecommendedRenderTargetSize(&nWidth, &nHeight);
 
   Local<Object> result = Nan::New<Object>();
@@ -178,6 +176,52 @@ NAN_METHOD(IVRSystem::GetProjectionMatrix)
   vr::HmdMatrix44_t matrix = obj->self_->GetProjectionMatrix(eEye, fNearZ, fFarZ, eProjType);
 
   info.GetReturnValue().Set(convert(matrix));
+}
+
+//=============================================================================
+/// virtual void GetProjectionRaw( EVREye eEye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom ) = 0;
+NAN_METHOD(IVRSystem::GetProjectionRaw)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 1)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number (EVREye).");
+    return;
+  }
+
+  uint32_t nEye = info[0]->Uint32Value();
+  if (nEye >= 2)
+  {
+    Nan::ThrowTypeError("Argument[0] was out of enum range (EVREye).");
+    return;
+  }
+
+  vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
+  float fLeft, fRight, fTop, fBottom;
+  obj->self_->GetProjectionRaw(eEye, &fLeft, &fRight, &fTop, &fBottom);
+
+  Local<Object> result = Nan::New<Object>();
+  {
+    Local<String> left_prop = Nan::New<String>("left").ToLocalChecked();
+    Nan::Set(result, left_prop, Nan::New<Number>(fLeft));
+
+    Local<String> right_prop = Nan::New<String>("right").ToLocalChecked();
+    Nan::Set(result, right_prop, Nan::New<Number>(fRight));
+
+    Local<String> top_prop = Nan::New<String>("top").ToLocalChecked();
+    Nan::Set(result, top_prop, Nan::New<Number>(fTop));
+
+    Local<String> bottom_prop = Nan::New<String>("bottom").ToLocalChecked();
+    Nan::Set(result, bottom_prop, Nan::New<Number>(fBottom));
+  }
+  info.GetReturnValue().Set(result);
 }
 
 //=============================================================================
