@@ -98,4 +98,14 @@ openvr.EVRApplicationType = {
 	'VRApplication_SteamWatchdog': 6,
 };
 
+openvr.EVREye = {
+	'Eye_Left': 0,
+	'Eye_Right': 1,
+};
+
+openvr.EGraphicsAPIConvention = {
+	'API_DirectX': 0,
+	'API_OpenGL': 1,
+};
+
 module.exports = openvr;

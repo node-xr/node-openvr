@@ -1,4 +1,5 @@
 #include "ivrsystem.h"
+#include "util.h"
 
 #include <node.h>
 #include <openvr.h>
@@ -14,11 +15,12 @@ NAN_MODULE_INIT(IVRSystem::Init)
   // Declare human-readable name for this wrapper.
   tpl->SetClassName(Nan::New("IVRSystem").ToLocalChecked());
 
-  // Declare the stored number of fields (effectively the number of methods).
+  // Declare the stored number of fields (just the wrapped C++ object).
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   // Assign all the wrapped methods of this object.
   Nan::SetPrototypeMethod(tpl, "GetRecommendedRenderTargetSize", GetRecommendedRenderTargetSize);
+  Nan::SetPrototypeMethod(tpl, "GetProjectionMatrix", GetProjectionMatrix);
   /// virtual HmdMatrix44_t GetProjectionMatrix( EVREye eEye, float fNearZ, float fFarZ ) = 0;
   /// virtual void GetProjectionRaw( EVREye eEye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom ) = 0;
   /// virtual bool ComputeDistortion( EVREye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates ) = 0;
@@ -104,19 +106,78 @@ NAN_METHOD(IVRSystem::GetRecommendedRenderTargetSize)
 {
   IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
 
-  uint32_t width;
-  uint32_t height;
-  obj->self_->GetRecommendedRenderTargetSize(&width, &height);
+  uint32_t nWidth;
+  uint32_t nHeight;
+  obj->self_->GetRecommendedRenderTargetSize(&nWidth, &nHeight);
 
   Local<Object> result = Nan::New<Object>();
   {
     Local<String> width_prop = Nan::New<String>("width").ToLocalChecked();
-    Nan::Set(result, width_prop, Nan::New<Number>(width));
+    Nan::Set(result, width_prop, Nan::New<Number>(nWidth));
 
     Local<String> height_prop = Nan::New<String>("height").ToLocalChecked();
-    Nan::Set(result, height_prop, Nan::New<Number>(height));
+    Nan::Set(result, height_prop, Nan::New<Number>(nHeight));
   }
   info.GetReturnValue().Set(result);
+}
+
+//=============================================================================
+/// virtual HmdMatrix44_t GetProjectionMatrix( EVREye eEye, float fNearZ, float fFarZ, EGraphicsAPIConvention eProjType ) = 0;
+NAN_METHOD(IVRSystem::GetProjectionMatrix)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 4)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number (EVREye).");
+    return;
+  }
+
+  uint32_t nEye = info[0]->Uint32Value();
+  if (nEye >= 2)
+  {
+    Nan::ThrowTypeError("Argument[0] was out of enum range (EVREye).");
+    return;
+  }
+
+  if (!info[1]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[1] must be a number.");
+    return;
+  }
+
+  if (!info[2]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[2] must be a number.");
+    return;
+  }
+
+  if (!info[3]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[3] must be a number (EVREye).");
+    return;
+  }
+
+  uint32_t nProjType = info[3]->Uint32Value();
+  if (nProjType >= 2)
+  {
+    Nan::ThrowTypeError("Argument[3] was out of enum range (EGraphicsAPIConvention).");
+    return;
+  }
+
+  vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
+  float fNearZ = static_cast<float>(info[1]->NumberValue());
+  float fFarZ = static_cast<float>(info[2]->NumberValue());
+  vr::EGraphicsAPIConvention eProjType = static_cast<vr::EGraphicsAPIConvention>(nProjType);
+  vr::HmdMatrix44_t matrix = obj->self_->GetProjectionMatrix(eEye, fNearZ, fFarZ, eProjType);
+
+  info.GetReturnValue().Set(convert(matrix));
 }
 
 //=============================================================================

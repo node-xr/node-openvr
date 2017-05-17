@@ -28,4 +28,16 @@ describe('IVRSystem', () => {
       expect(result.height).to.satisfy(Number.isInteger);
     });
   });
+
+  describe('#GetProjectionMatrix', () => {
+    it('should return a 4x4 numeric matrix.', () => {
+      const result = ivrsystem.GetProjectionMatrix(
+        openvr.EVREye.Eye_Left, 0, 1000,
+        openvr.EGraphicsAPIConvention.API_OpenGL);
+
+      expect(result).to.have.lengthOf(4);
+      expect(result[0]).to.have.lengthOf(4);
+      expect(result[0][0]).to.be.a('number');
+    });
+  });
 });

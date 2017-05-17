@@ -29,7 +29,9 @@ private:
   /// virtual void GetRecommendedRenderTargetSize( uint32_t *pnWidth, uint32_t *pnHeight ) = 0;
   static NAN_METHOD(GetRecommendedRenderTargetSize);
 
-  /// virtual HmdMatrix44_t GetProjectionMatrix( EVREye eEye, float fNearZ, float fFarZ ) = 0;
+  /// virtual HmdMatrix44_t GetProjectionMatrix( EVREye eEye, float fNearZ, float fFarZ, EGraphicsAPIConvention eProjType ) = 0;
+  static NAN_METHOD(GetProjectionMatrix);
+
   /// virtual void GetProjectionRaw( EVREye eEye, float *pfLeft, float *pfRight, float *pfTop, float *pfBottom ) = 0;
   /// virtual bool ComputeDistortion( EVREye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates ) = 0;
   ///	virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
