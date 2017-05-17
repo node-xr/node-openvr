@@ -1,4 +1,5 @@
 #include "openvr.h"
+#include "ivrsystem.h"
 
 #include <node.h>
 #include <openvr.h>
