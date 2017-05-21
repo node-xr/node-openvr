@@ -24,7 +24,7 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "GetProjectionRaw", GetProjectionRaw);
   Nan::SetPrototypeMethod(tpl, "ComputeDistortion", ComputeDistortion);
   Nan::SetPrototypeMethod(tpl, "GetEyeToHeadTransform", GetEyeToHeadTransform);
-  /// virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
+  Nan::SetPrototypeMethod(tpl, "GetTimeSinceLastVsync", GetTimeSinceLastVsync);
   /// virtual int32_t GetD3D9AdapterIndex() = 0;
   /// virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
   /// virtual bool IsDisplayOnDesktop() = 0;
@@ -104,6 +104,12 @@ NAN_METHOD(IVRSystem::New)
 NAN_METHOD(IVRSystem::GetRecommendedRenderTargetSize)
 {
   IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 0)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
 
   uint32_t nWidth, nHeight;
   obj->self_->GetRecommendedRenderTargetSize(&nWidth, &nHeight);
@@ -299,6 +305,35 @@ NAN_METHOD(IVRSystem::GetEyeToHeadTransform)
   vr::HmdMatrix34_t matrix = obj->self_->GetEyeToHeadTransform(eEye);
 
   info.GetReturnValue().Set(convert(matrix));
+}
+
+//=============================================================================
+/// virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
+NAN_METHOD(IVRSystem::GetTimeSinceLastVsync)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 0)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  float fSecondsSinceLastVsync;
+  uint64_t ulFrameCounter;
+  obj->self_->GetTimeSinceLastVsync(&fSecondsSinceLastVsync, &ulFrameCounter);
+
+  Local<Object> result = Nan::New<Object>();
+  {
+    Local<String> seconds_prop = Nan::New<String>("seconds").ToLocalChecked();
+    Nan::Set(result, seconds_prop, Nan::New<Number>(fSecondsSinceLastVsync));
+
+    // We can't return a 64-bit int, so we just have to return a 32-bit
+    // truncation and hope that clients can deal with eventual overflow.
+    Local<String> frame_prop = Nan::New<String>("frame").ToLocalChecked();
+    Nan::Set(result, frame_prop, Nan::New<Number>(static_cast<uint32_t>(ulFrameCounter)));
+  }
+  info.GetReturnValue().Set(result);
 }
 
 //=============================================================================

@@ -42,6 +42,8 @@ private:
   static NAN_METHOD(GetEyeToHeadTransform);
 
   /// virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
+  static NAN_METHOD(GetTimeSinceLastVsync);
+
   /// virtual int32_t GetD3D9AdapterIndex() = 0;
   /// virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
   /// virtual bool IsDisplayOnDesktop() = 0;
