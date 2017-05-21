@@ -69,4 +69,15 @@ describe('IVRSystem', () => {
       expect(result.blue[0]).to.be.a('number');
     });
   });
+
+  describe('#GetEyeToHeadTransform', () => {
+    it('should return a 3x4 numeric matrix.', () => {
+      const result = ivrsystem.GetEyeToHeadTransform(
+        openvr.EVREye.Eye_Left);
+
+      expect(result).to.have.lengthOf(3);
+      expect(result[0]).to.have.lengthOf(4);
+      expect(result[0][0]).to.be.a('number');
+    });
+  });
 });

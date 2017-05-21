@@ -31,6 +31,26 @@ v8::Local<v8::Object> convert(const vr::HmdMatrix44_t &value)
 
 //=============================================================================
 template<>
+v8::Local<v8::Object> convert(const vr::HmdMatrix34_t &value)
+{
+  Nan::EscapableHandleScope scope;
+  auto result = Nan::New<v8::Array>();
+
+  for (unsigned int rowIdx = 0; rowIdx < 3; ++rowIdx)
+  {
+    auto row = Nan::New<v8::Array>();
+    for (unsigned int colIdx = 0; colIdx < 4; ++colIdx)
+    {
+      Nan::Set(row, colIdx, Nan::New<v8::Number>(value.m[rowIdx][colIdx]));
+    }
+    Nan::Set(result, rowIdx, row);
+  }
+
+  return scope.Escape(result);
+}
+
+//=============================================================================
+template<>
 v8::Local<v8::Object> convert(const vr::DistortionCoordinates_t &value)
 {
   Nan::EscapableHandleScope scope;

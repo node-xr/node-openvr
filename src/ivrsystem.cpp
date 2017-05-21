@@ -23,7 +23,7 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "GetProjectionMatrix", GetProjectionMatrix);
   Nan::SetPrototypeMethod(tpl, "GetProjectionRaw", GetProjectionRaw);
   Nan::SetPrototypeMethod(tpl, "ComputeDistortion", ComputeDistortion);
-  /// virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
+  Nan::SetPrototypeMethod(tpl, "GetEyeToHeadTransform", GetEyeToHeadTransform);
   /// virtual bool GetTimeSinceLastVsync( float *pfSecondsSinceLastVsync, uint64_t *pulFrameCounter ) = 0;
   /// virtual int32_t GetD3D9AdapterIndex() = 0;
   /// virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
@@ -268,6 +268,37 @@ NAN_METHOD(IVRSystem::ComputeDistortion)
     obj->self_->ComputeDistortion(eEye, fU, fV);
 
   info.GetReturnValue().Set(convert(distortionCoordinates));
+}
+
+//=============================================================================
+/// virtual HmdMatrix34_t GetEyeToHeadTransform( EVREye eEye ) = 0;
+NAN_METHOD(IVRSystem::GetEyeToHeadTransform)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 1)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number (EVREye).");
+    return;
+  }
+
+  uint32_t nEye = info[0]->Uint32Value();
+  if (nEye >= 2)
+  {
+    Nan::ThrowTypeError("Argument[0] was out of enum range (EVREye).");
+    return;
+  }
+
+  vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
+  vr::HmdMatrix34_t matrix = obj->self_->GetEyeToHeadTransform(eEye);
+
+  info.GetReturnValue().Set(convert(matrix));
 }
 
 //=============================================================================
