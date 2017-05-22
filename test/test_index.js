@@ -105,4 +105,12 @@ describe('IVRSystem', () => {
       expect(result).to.satisfy(Number.isInteger);
     });
   });
+
+  describe('#IsDisplayOnDesktop', () => {
+    it('should return a boolean value', () => {
+      const result = ivrsystem.IsDisplayOnDesktop();
+
+      expect(result).to.be.a('boolean');
+    });
+  });
 });

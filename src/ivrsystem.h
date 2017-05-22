@@ -51,6 +51,8 @@ private:
   static NAN_METHOD(GetDXGIOutputInfo);
 
   /// virtual bool IsDisplayOnDesktop() = 0;
+  static NAN_METHOD(IsDisplayOnDesktop);
+
   /// virtual bool SetDisplayVisibility( bool bIsVisibleOnDesktop ) = 0;
   /// virtual void GetDeviceToAbsoluteTrackingPose( ETrackingUniverseOrigin eOrigin, float fPredictedSecondsToPhotonsFromNow, VR_ARRAY_COUNT(unTrackedDevicePoseArrayCount) TrackedDevicePose_t *pTrackedDevicePoseArray, uint32_t unTrackedDevicePoseArrayCount ) = 0;
   /// virtual void ResetSeatedZeroPose() = 0;
