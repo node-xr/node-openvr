@@ -26,7 +26,7 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "GetEyeToHeadTransform", GetEyeToHeadTransform);
   Nan::SetPrototypeMethod(tpl, "GetTimeSinceLastVsync", GetTimeSinceLastVsync);
   Nan::SetPrototypeMethod(tpl, "GetD3D9AdapterIndex", GetD3D9AdapterIndex);
-  /// virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
+  Nan::SetPrototypeMethod(tpl, "GetDXGIOutputInfo", GetDXGIOutputInfo);
   /// virtual bool IsDisplayOnDesktop() = 0;
   /// virtual bool SetDisplayVisibility( bool bIsVisibleOnDesktop ) = 0;
   /// virtual void GetDeviceToAbsoluteTrackingPose( ETrackingUniverseOrigin eOrigin, float fPredictedSecondsToPhotonsFromNow, VR_ARRAY_COUNT(unTrackedDevicePoseArrayCount) TrackedDevicePose_t *pTrackedDevicePoseArray, uint32_t unTrackedDevicePoseArrayCount ) = 0;
@@ -350,6 +350,23 @@ NAN_METHOD(IVRSystem::GetD3D9AdapterIndex)
 
   uint32_t index = obj->self_->GetD3D9AdapterIndex();
   info.GetReturnValue().Set(Nan::New<Number>(index));
+}
+
+//=============================================================================
+/// virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
+NAN_METHOD(IVRSystem::GetDXGIOutputInfo)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 0)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  int32_t nAdapterIndex;
+  obj->self_->GetDXGIOutputInfo(&nAdapterIndex);
+  info.GetReturnValue().Set(Nan::New<Number>(nAdapterIndex));
 }
 
 //=============================================================================

@@ -91,8 +91,16 @@ describe('IVRSystem', () => {
   });
 
   describe('#GetD3D9AdapterIndex', () => {
-    it('should return an integer device index', () => {
+    it('should return an integer adapter index', () => {
       const result = ivrsystem.GetD3D9AdapterIndex();
+
+      expect(result).to.satisfy(Number.isInteger);
+    });
+  });
+
+  describe('#GetDXGIOutputInfo', () => {
+    it('should return an integer adapter index', () => {
+      const result = ivrsystem.GetDXGIOutputInfo();
 
       expect(result).to.satisfy(Number.isInteger);
     });
