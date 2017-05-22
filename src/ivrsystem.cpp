@@ -25,7 +25,7 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "ComputeDistortion", ComputeDistortion);
   Nan::SetPrototypeMethod(tpl, "GetEyeToHeadTransform", GetEyeToHeadTransform);
   Nan::SetPrototypeMethod(tpl, "GetTimeSinceLastVsync", GetTimeSinceLastVsync);
-  /// virtual int32_t GetD3D9AdapterIndex() = 0;
+  Nan::SetPrototypeMethod(tpl, "GetD3D9AdapterIndex", GetD3D9AdapterIndex);
   /// virtual void GetDXGIOutputInfo( int32_t *pnAdapterIndex ) = 0;
   /// virtual bool IsDisplayOnDesktop() = 0;
   /// virtual bool SetDisplayVisibility( bool bIsVisibleOnDesktop ) = 0;
@@ -334,6 +334,22 @@ NAN_METHOD(IVRSystem::GetTimeSinceLastVsync)
     Nan::Set(result, frame_prop, Nan::New<Number>(static_cast<uint32_t>(ulFrameCounter)));
   }
   info.GetReturnValue().Set(result);
+}
+
+//=============================================================================
+/// virtual int32_t GetD3D9AdapterIndex() = 0;
+NAN_METHOD(IVRSystem::GetD3D9AdapterIndex)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 0)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  uint32_t index = obj->self_->GetD3D9AdapterIndex();
+  info.GetReturnValue().Set(Nan::New<Number>(index));
 }
 
 //=============================================================================

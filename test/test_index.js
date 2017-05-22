@@ -89,4 +89,12 @@ describe('IVRSystem', () => {
       expect(result.seconds).to.be.a('number');
     });
   });
+
+  describe('#GetD3D9AdapterIndex', () => {
+    it('should return an integer device index', () => {
+      const result = ivrsystem.GetD3D9AdapterIndex();
+
+      expect(result).to.satisfy(Number.isInteger);
+    });
+  });
 });
