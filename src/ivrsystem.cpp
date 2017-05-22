@@ -28,7 +28,7 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "GetD3D9AdapterIndex", GetD3D9AdapterIndex);
   Nan::SetPrototypeMethod(tpl, "GetDXGIOutputInfo", GetDXGIOutputInfo);
   Nan::SetPrototypeMethod(tpl, "IsDisplayOnDesktop", IsDisplayOnDesktop);
-  /// virtual bool SetDisplayVisibility( bool bIsVisibleOnDesktop ) = 0;
+  Nan::SetPrototypeMethod(tpl, "SetDisplayVisibility", SetDisplayVisibility);
   /// virtual void GetDeviceToAbsoluteTrackingPose( ETrackingUniverseOrigin eOrigin, float fPredictedSecondsToPhotonsFromNow, VR_ARRAY_COUNT(unTrackedDevicePoseArrayCount) TrackedDevicePose_t *pTrackedDevicePoseArray, uint32_t unTrackedDevicePoseArrayCount ) = 0;
   /// virtual void ResetSeatedZeroPose() = 0;
   /// virtual HmdMatrix34_t GetSeatedZeroPoseToStandingAbsoluteTrackingPose() = 0;
@@ -383,6 +383,29 @@ NAN_METHOD(IVRSystem::IsDisplayOnDesktop)
 
   bool bIsVisibleOnDesktop = obj->self_->IsDisplayOnDesktop();
   info.GetReturnValue().Set(Nan::New<Boolean>(bIsVisibleOnDesktop));
+}
+
+//=============================================================================
+/// virtual bool SetDisplayVisibility( bool bIsVisibleOnDesktop ) = 0;
+NAN_METHOD(IVRSystem::SetDisplayVisibility)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 1)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsBoolean())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a boolean.");
+    return;
+  }
+
+  bool bIsVisibleOnDesktop = info[0]->BooleanValue();
+  bool bSuccess = obj->self_->SetDisplayVisibility(bIsVisibleOnDesktop);
+  info.GetReturnValue().Set(Nan::New<Boolean>(bSuccess));
 }
 
 //=============================================================================

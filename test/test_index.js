@@ -113,4 +113,12 @@ describe('IVRSystem', () => {
       expect(result).to.be.a('boolean');
     });
   });
+
+  describe('#SetDisplayVisibility', () => {
+    it('should take a boolean and return a boolean', () => {
+      const result = ivrsystem.SetDisplayVisibility(false);
+
+      expect(result).to.be.a('boolean');
+    });
+  });
 });
