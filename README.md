@@ -1,9 +1,9 @@
 # node-openvr
-OpenVR bindings to nodejs through node-glew.
+OpenVR bindings to nodejs.
 
 #### Quickstart
 ```
-npm build
-npm lint
-npm test
+npm install  # Build native bindings
+npm lint     # Perform ESLint check
+npm test     # Run Mocha + Chai unit test (requires a connected VR headset).
 ```
