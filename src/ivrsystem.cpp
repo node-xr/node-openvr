@@ -42,7 +42,9 @@ NAN_MODULE_INIT(IVRSystem::Init)
   /// virtual void ApplyTransform( TrackedDevicePose_t *pOutputPose, const TrackedDevicePose_t *pTrackedDevicePose, const HmdMatrix34_t *pTransform ) = 0;
   /// virtual vr::TrackedDeviceIndex_t GetTrackedDeviceIndexForControllerRole( vr::ETrackedControllerRole unDeviceType ) = 0;
   /// virtual vr::ETrackedControllerRole GetControllerRoleForTrackedDeviceIndex( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
-  /// virtual ETrackedDeviceClass GetTrackedDeviceClass( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+
+  Nan::SetPrototypeMethod(tpl, "GetTrackedDeviceClass", GetTrackedDeviceClass);
+
   /// virtual bool IsTrackedDeviceConnected( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
   /// virtual bool GetBoolTrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
   /// virtual float GetFloatTrackedDeviceProperty( vr::TrackedDeviceIndex_t unDeviceIndex, ETrackedDeviceProperty prop, ETrackedPropertyError *pError = 0L ) = 0;
@@ -447,4 +449,29 @@ NAN_METHOD(IVRSystem::GetDeviceToAbsoluteTrackingPose)
   );
 
   info.GetReturnValue().Set(convert(trackedDevicePoseArray));
+}
+
+//=============================================================================
+/// virtual ETrackedDeviceClass GetTrackedDeviceClass( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+NAN_METHOD(IVRSystem::GetTrackedDeviceClass)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 1)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number.");
+    return;
+  }
+
+  uint32_t unDeviceIndex = info[0]->Uint32Value();
+  vr::ETrackedDeviceClass trackedDeviceClass =
+    obj->self_->GetTrackedDeviceClass(unDeviceIndex);
+  info.GetReturnValue().Set(Nan::New<Number>(
+    static_cast<uint32_t>(trackedDeviceClass)));
 }

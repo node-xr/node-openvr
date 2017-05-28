@@ -143,4 +143,12 @@ describe('IVRSystem', () => {
       expect(result[0].deviceIsConnected).to.be.a('boolean');
     });
   });
+
+  describe('#GetTrackedDeviceClass', () => {
+    it('should take an integer and return an integer', () => {
+      const result = ivrsystem.GetTrackedDeviceClass(0);
+
+      expect(result).to.satisfy(Number.isInteger);
+    });
+  });
 });
