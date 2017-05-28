@@ -1,10 +1,13 @@
 #include "ivrsystem.h"
 #include "util.h"
 
+#include <array>
 #include <node.h>
 #include <openvr.h>
 
 using namespace v8;
+
+using TrackedDevicePoseArray = std::array<vr::TrackedDevicePose_t, vr::k_unMaxTrackedDeviceCount>;
 
 //=============================================================================
 NAN_MODULE_INIT(IVRSystem::Init)
@@ -29,7 +32,8 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "GetDXGIOutputInfo", GetDXGIOutputInfo);
   Nan::SetPrototypeMethod(tpl, "IsDisplayOnDesktop", IsDisplayOnDesktop);
   Nan::SetPrototypeMethod(tpl, "SetDisplayVisibility", SetDisplayVisibility);
-  /// virtual void GetDeviceToAbsoluteTrackingPose( ETrackingUniverseOrigin eOrigin, float fPredictedSecondsToPhotonsFromNow, VR_ARRAY_COUNT(unTrackedDevicePoseArrayCount) TrackedDevicePose_t *pTrackedDevicePoseArray, uint32_t unTrackedDevicePoseArrayCount ) = 0;
+  Nan::SetPrototypeMethod(tpl, "GetDeviceToAbsoluteTrackingPose", GetDeviceToAbsoluteTrackingPose);
+
   /// virtual void ResetSeatedZeroPose() = 0;
   /// virtual HmdMatrix34_t GetSeatedZeroPoseToStandingAbsoluteTrackingPose() = 0;
   /// virtual HmdMatrix34_t GetRawZeroPoseToStandingAbsoluteTrackingPose() = 0;
@@ -75,6 +79,13 @@ Local<Object> IVRSystem::NewInstance(vr::IVRSystem *system)
   Local<Function> cons = Nan::New(constructor());
   Local<Value> argv[1] = { Nan::New<External>(system) };
   return scope.Escape(Nan::NewInstance(cons, 1, argv).ToLocalChecked());
+}
+
+//=============================================================================
+IVRSystem::IVRSystem(vr::IVRSystem *self)
+: self_(self)
+{
+  // Do nothing.
 }
 
 //=============================================================================
@@ -409,8 +420,43 @@ NAN_METHOD(IVRSystem::SetDisplayVisibility)
 }
 
 //=============================================================================
-IVRSystem::IVRSystem(vr::IVRSystem *self)
-: self_(self)
+/// virtual void GetDeviceToAbsoluteTrackingPose( ETrackingUniverseOrigin eOrigin, float fPredictedSecondsToPhotonsFromNow, VR_ARRAY_COUNT(unTrackedDevicePoseArrayCount) TrackedDevicePose_t *pTrackedDevicePoseArray, uint32_t unTrackedDevicePoseArrayCount ) = 0;
+NAN_METHOD(IVRSystem::GetDeviceToAbsoluteTrackingPose)
 {
-  // Do nothing.
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 2)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number (ETrackingUniverseOrigin).");
+    return;
+  }
+
+  uint32_t nOrigin = info[0]->Uint32Value();
+  if (nOrigin >= 3)
+  {
+    Nan::ThrowTypeError("Argument[0] was out of enum range (ETrackingUniverseOrigin).");
+    return;
+  }
+
+  if (!info[1]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[1] must be a number.");
+    return;
+  }
+
+  vr::ETrackingUniverseOrigin eOrigin = static_cast<vr::ETrackingUniverseOrigin>(nOrigin);
+  float fPredictedSecondsToPhotonsFromNow = static_cast<float>(info[1]->NumberValue());
+  TrackedDevicePoseArray trackedDevicePoseArray;
+  obj->self_->GetDeviceToAbsoluteTrackingPose(
+    eOrigin, fPredictedSecondsToPhotonsFromNow, trackedDevicePoseArray.data(),
+    static_cast<uint32_t>(trackedDevicePoseArray.size())
+  );
+
+  info.GetReturnValue().Set(convert(trackedDevicePoseArray));
 }

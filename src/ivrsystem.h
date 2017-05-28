@@ -57,6 +57,8 @@ private:
   static NAN_METHOD(SetDisplayVisibility);
 
   /// virtual void GetDeviceToAbsoluteTrackingPose( ETrackingUniverseOrigin eOrigin, float fPredictedSecondsToPhotonsFromNow, VR_ARRAY_COUNT(unTrackedDevicePoseArrayCount) TrackedDevicePose_t *pTrackedDevicePoseArray, uint32_t unTrackedDevicePoseArrayCount ) = 0;
+  static NAN_METHOD(GetDeviceToAbsoluteTrackingPose);
+
   /// virtual void ResetSeatedZeroPose() = 0;
   /// virtual HmdMatrix34_t GetSeatedZeroPoseToStandingAbsoluteTrackingPose() = 0;
   /// virtual HmdMatrix34_t GetRawZeroPoseToStandingAbsoluteTrackingPose() = 0;
