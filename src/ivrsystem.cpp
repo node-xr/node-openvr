@@ -137,12 +137,12 @@ NAN_METHOD(IVRSystem::GetRecommendedRenderTargetSize)
 }
 
 //=============================================================================
-/// virtual HmdMatrix44_t GetProjectionMatrix( EVREye eEye, float fNearZ, float fFarZ, EGraphicsAPIConvention eProjType ) = 0;
+/// virtual HmdMatrix44_t GetProjectionMatrix( EVREye eEye, float fNearZ, float fFarZ ) = 0;
 NAN_METHOD(IVRSystem::GetProjectionMatrix)
 {
   IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
 
-  if (info.Length() != 4)
+  if (info.Length() != 3)
   {
     Nan::ThrowError("Wrong number of arguments.");
     return;
@@ -173,24 +173,10 @@ NAN_METHOD(IVRSystem::GetProjectionMatrix)
     return;
   }
 
-  if (!info[3]->IsNumber())
-  {
-    Nan::ThrowTypeError("Argument[3] must be a number (EVREye).");
-    return;
-  }
-
-  uint32_t nProjType = info[3]->Uint32Value();
-  if (nProjType >= 2)
-  {
-    Nan::ThrowTypeError("Argument[3] was out of enum range (EGraphicsAPIConvention).");
-    return;
-  }
-
   vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
   float fNearZ = static_cast<float>(info[1]->NumberValue());
   float fFarZ = static_cast<float>(info[2]->NumberValue());
-  vr::EGraphicsAPIConvention eProjType = static_cast<vr::EGraphicsAPIConvention>(nProjType);
-  vr::HmdMatrix44_t matrix = obj->self_->GetProjectionMatrix(eEye, fNearZ, fFarZ, eProjType);
+  vr::HmdMatrix44_t matrix = obj->self_->GetProjectionMatrix(eEye, fNearZ, fFarZ);
 
   info.GetReturnValue().Set(convert(matrix));
 }
@@ -242,7 +228,7 @@ NAN_METHOD(IVRSystem::GetProjectionRaw)
 }
 
 //=============================================================================
-/// virtual DistortionCoordinates_t ComputeDistortion( EVREye eEye, float fU, float fV ) = 0;
+/// virtual bool ComputeDistortion( EVREye eEye, float fU, float fV, DistortionCoordinates_t *pDistortionCoordinates ) = 0;
 NAN_METHOD(IVRSystem::ComputeDistortion)
 {
   IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
@@ -281,9 +267,11 @@ NAN_METHOD(IVRSystem::ComputeDistortion)
   vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
   float fU = static_cast<float>(info[1]->NumberValue());
   float fV = static_cast<float>(info[2]->NumberValue());
-  vr::DistortionCoordinates_t distortionCoordinates =
-    obj->self_->ComputeDistortion(eEye, fU, fV);
+  vr::DistortionCoordinates_t distortionCoordinates;
+  bool success = obj->self_->ComputeDistortion(eEye, fU, fV, &distortionCoordinates);
 
+  if (!success)
+    Nan::ThrowError("Distortion coordinates not suitable.");
   info.GetReturnValue().Set(convert(distortionCoordinates));
 }
 

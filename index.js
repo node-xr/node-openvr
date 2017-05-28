@@ -96,16 +96,12 @@ openvr.EVRApplicationType = {
   Utility: 4,
   VRMonitor: 5,
   SteamWatchdog: 6,
+  Bootstrapper: 7,
 };
 
 openvr.EVREye = {
   Left: 0,
   Right: 1,
-};
-
-openvr.EGraphicsAPIConvention = {
-  DirectX: 0,
-  OpenGL: 1,
 };
 
 openvr.ETrackingUniverseOrigin = {
@@ -117,9 +113,18 @@ openvr.ETrackingUniverseOrigin = {
 openvr.ETrackingResult = {
   Uninitialized: 1,
   Calibrating_InProgress: 100,
-  Running_OK: 200,
   Calibrating_OutOfRange: 101,
+  Running_OK: 200,
   Running_OutOfRange: 201,
+};
+
+openvr.ETrackedDeviceClass = {
+  Invalid: 0,
+  HMD: 1,
+  Controller: 2,
+  GenericTracker: 3,
+  TrackingReference: 4,
+  DisplayRedirect: 5,
 };
 
 module.exports = openvr;

@@ -35,8 +35,7 @@ describe('IVRSystem', () => {
   describe('#GetProjectionMatrix', () => {
     it('should return a 4x4 numeric matrix', () => {
       const result = ivrsystem.GetProjectionMatrix(
-        openvr.EVREye.Left, 0, 1000,
-        openvr.EGraphicsAPIConvention.OpenGL);
+        openvr.EVREye.Left, 0, 1000);
 
       expect(result).to.have.lengthOf(4);
       expect(result[0]).to.have.lengthOf(4);
@@ -133,10 +132,10 @@ describe('IVRSystem', () => {
       expect(result[0].deviceToAbsoluteTracking[0]).to.have.lengthOf(4);
       expect(result[0].deviceToAbsoluteTracking[0][0]).to.be.a('number');
 
-      expect(result[0].velocity).to.have.lengthOf(3)
+      expect(result[0].velocity).to.have.lengthOf(3);
       expect(result[0].velocity[0]).to.be.a('number');
 
-      expect(result[0].angularVelocity).to.have.lengthOf(3)
+      expect(result[0].angularVelocity).to.have.lengthOf(3);
       expect(result[0].angularVelocity[0]).to.be.a('number');
 
       expect(result[0].trackingResult).to.satisfy(Number.isInteger);
