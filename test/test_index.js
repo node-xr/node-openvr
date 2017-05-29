@@ -151,4 +151,10 @@ describe('IVRSystem', () => {
       expect(result).to.satisfy(Number.isInteger);
     });
   });
+
+  describe('#ResetSeatedZeroPose', () => {
+    it('cannot be tested because it will annoyingly reset the HMD settings', () => {
+      // TODO: figure out how to test this without modifying settings.
+    });
+  });
 });

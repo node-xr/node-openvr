@@ -33,6 +33,7 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "IsDisplayOnDesktop", IsDisplayOnDesktop);
   Nan::SetPrototypeMethod(tpl, "SetDisplayVisibility", SetDisplayVisibility);
   Nan::SetPrototypeMethod(tpl, "GetDeviceToAbsoluteTrackingPose", GetDeviceToAbsoluteTrackingPose);
+  Nan::SetPrototypeMethod(tpl, "ResetSeatedZeroPose", ResetSeatedZeroPose);
 
   /// virtual void ResetSeatedZeroPose() = 0;
   /// virtual HmdMatrix34_t GetSeatedZeroPoseToStandingAbsoluteTrackingPose() = 0;
@@ -449,6 +450,21 @@ NAN_METHOD(IVRSystem::GetDeviceToAbsoluteTrackingPose)
   );
 
   info.GetReturnValue().Set(convert(trackedDevicePoseArray));
+}
+
+//=============================================================================
+/// virtual void ResetSeatedZeroPose() = 0;
+NAN_METHOD(IVRSystem::ResetSeatedZeroPose)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 0)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  obj->self_->ResetSeatedZeroPose();
 }
 
 //=============================================================================
