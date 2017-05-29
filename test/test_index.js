@@ -144,17 +144,27 @@ describe('IVRSystem', () => {
     });
   });
 
+  describe('#ResetSeatedZeroPose', () => {
+    it('cannot be tested because it will annoyingly reset the HMD settings', () => {
+      // TODO: figure out how to test this without modifying settings.
+    });
+  });
+
+  describe('#GetSeatedZeroPoseToStandingAbsoluteTrackingPose', () => {
+    it('returns a 3x4 matrix', () => {
+      const result = ivrsystem.GetSeatedZeroPoseToStandingAbsoluteTrackingPose();
+
+      expect(result).to.have.lengthOf(3);
+      expect(result[0]).to.have.lengthOf(4);
+      expect(result[0][0]).to.be.a('number');
+    });
+  });
+
   describe('#GetTrackedDeviceClass', () => {
     it('should take an integer and return an integer', () => {
       const result = ivrsystem.GetTrackedDeviceClass(0);
 
       expect(result).to.satisfy(Number.isInteger);
-    });
-  });
-
-  describe('#ResetSeatedZeroPose', () => {
-    it('cannot be tested because it will annoyingly reset the HMD settings', () => {
-      // TODO: figure out how to test this without modifying settings.
     });
   });
 });
