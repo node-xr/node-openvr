@@ -160,6 +160,16 @@ describe('IVRSystem', () => {
     });
   });
 
+  describe('#GetRawZeroPoseToStandingAbsoluteTrackingPose', () => {
+    it('returns a 3x4 matrix', () => {
+      const result = ivrsystem.GetRawZeroPoseToStandingAbsoluteTrackingPose();
+
+      expect(result).to.have.lengthOf(3);
+      expect(result[0]).to.have.lengthOf(4);
+      expect(result[0][0]).to.be.a('number');
+    });
+  });
+
   describe('#GetTrackedDeviceClass', () => {
     it('should take an integer and return an integer', () => {
       const result = ivrsystem.GetTrackedDeviceClass(0);
