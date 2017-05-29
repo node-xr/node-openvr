@@ -37,7 +37,9 @@ describe('IVRSystem', () => {
       const result = ivrsystem.GetProjectionMatrix(
         openvr.EVREye.Left, 0, 1000);
 
+      expect(result).to.be.an('array');
       expect(result).to.have.lengthOf(4);
+      expect(result[0]).to.be.an('array');
       expect(result[0]).to.have.lengthOf(4);
       expect(result[0][0]).to.be.a('number');
     });
@@ -74,7 +76,9 @@ describe('IVRSystem', () => {
       const result = ivrsystem.GetEyeToHeadTransform(
         openvr.EVREye.Left);
 
+      expect(result).to.be.an('array');
       expect(result).to.have.lengthOf(3);
+      expect(result[0]).to.be.an('array');
       expect(result[0]).to.have.lengthOf(4);
       expect(result[0][0]).to.be.a('number');
     });
@@ -126,9 +130,12 @@ describe('IVRSystem', () => {
       const result = ivrsystem.GetDeviceToAbsoluteTrackingPose(
         openvr.ETrackingUniverseOrigin.Standing, 0.0);
 
+      expect(result).to.be.an('array');
       expect(result).to.have.lengthOf(16); // vr::k_unMaxTrackedDeviceCount
 
+      expect(result[0].deviceToAbsoluteTracking).to.be.an('array');
       expect(result[0].deviceToAbsoluteTracking).to.have.lengthOf(3);
+      expect(result[0].deviceToAbsoluteTracking[0]).to.be.an('array');
       expect(result[0].deviceToAbsoluteTracking[0]).to.have.lengthOf(4);
       expect(result[0].deviceToAbsoluteTracking[0][0]).to.be.a('number');
 
@@ -154,7 +161,9 @@ describe('IVRSystem', () => {
     it('returns a 3x4 matrix', () => {
       const result = ivrsystem.GetSeatedZeroPoseToStandingAbsoluteTrackingPose();
 
+      expect(result).to.be.an('array');
       expect(result).to.have.lengthOf(3);
+      expect(result[0]).to.be.an('array');
       expect(result[0]).to.have.lengthOf(4);
       expect(result[0][0]).to.be.a('number');
     });
@@ -164,9 +173,33 @@ describe('IVRSystem', () => {
     it('returns a 3x4 matrix', () => {
       const result = ivrsystem.GetRawZeroPoseToStandingAbsoluteTrackingPose();
 
+      expect(result).to.be.an('array');
       expect(result).to.have.lengthOf(3);
+      expect(result[0]).to.be.an('array');
       expect(result[0]).to.have.lengthOf(4);
       expect(result[0][0]).to.be.a('number');
+    });
+  });
+
+  describe('#GetSortedTrackedDeviceIndicesOfClass', () => {
+    it('returns a list of integer indices', () => {
+      const result = ivrsystem.GetSortedTrackedDeviceIndicesOfClass(
+        openvr.ETrackedDeviceClass.HMD
+      );
+
+      expect(result).to.be.an('array');
+      expect(result).to.have.lengthOf(1);
+      expect(result[0]).to.be.a('number');
+    });
+
+    it('can take an optional relative index', () => {
+      const result = ivrsystem.GetSortedTrackedDeviceIndicesOfClass(
+        openvr.ETrackedDeviceClass.HMD, 0
+      );
+
+      expect(result).to.be.an('array');
+      expect(result).to.have.lengthOf(1);
+      expect(result[0]).to.be.a('number');
     });
   });
 

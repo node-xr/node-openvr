@@ -52,7 +52,7 @@
         ['OS=="win"', {
           'library_dirs': ['./deps/openvr/lib/win64'],
           'libraries': ['openvr_api.lib'],
-          'defines' : ['WIN32_LEAN_AND_MEAN', 'VC_EXTRALEAN'],
+          'defines' : ['WIN32_LEAN_AND_MEAN', 'VC_EXTRALEAN', 'NOMINMAX'],
           'msvs_settings' : {
             'VCCLCompilerTool' : {
               'AdditionalOptions' : ['/O2','/Oy','/GL','/GF','/Gm-','/EHsc','/MT','/GS','/Gy','/GR-','/Gd']

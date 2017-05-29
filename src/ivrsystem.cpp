@@ -8,6 +8,7 @@
 using namespace v8;
 
 using TrackedDevicePoseArray = std::array<vr::TrackedDevicePose_t, vr::k_unMaxTrackedDeviceCount>;
+using TrackedDeviceIndexArray = std::array<vr::TrackedDeviceIndex_t, vr::k_unMaxTrackedDeviceCount>;
 
 //=============================================================================
 NAN_MODULE_INIT(IVRSystem::Init)
@@ -36,8 +37,8 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "ResetSeatedZeroPose", ResetSeatedZeroPose);
   Nan::SetPrototypeMethod(tpl, "GetSeatedZeroPoseToStandingAbsoluteTrackingPose", GetSeatedZeroPoseToStandingAbsoluteTrackingPose);
   Nan::SetPrototypeMethod(tpl, "GetRawZeroPoseToStandingAbsoluteTrackingPose", GetRawZeroPoseToStandingAbsoluteTrackingPose);
+  Nan::SetPrototypeMethod(tpl, "GetSortedTrackedDeviceIndicesOfClass", GetSortedTrackedDeviceIndicesOfClass);
 
-  /// virtual uint32_t GetSortedTrackedDeviceIndicesOfClass( ETrackedDeviceClass eTrackedDeviceClass, VR_ARRAY_COUNT(unTrackedDeviceIndexArrayCount) vr::TrackedDeviceIndex_t *punTrackedDeviceIndexArray, uint32_t unTrackedDeviceIndexArrayCount, vr::TrackedDeviceIndex_t unRelativeToTrackedDeviceIndex = k_unTrackedDeviceIndex_Hmd ) = 0;
   /// virtual EDeviceActivityLevel GetTrackedDeviceActivityLevel( vr::TrackedDeviceIndex_t unDeviceId ) = 0;
   /// virtual void ApplyTransform( TrackedDevicePose_t *pOutputPose, const TrackedDevicePose_t *pTrackedDevicePose, const HmdMatrix34_t *pTransform ) = 0;
   /// virtual vr::TrackedDeviceIndex_t GetTrackedDeviceIndexForControllerRole( vr::ETrackedControllerRole unDeviceType ) = 0;
@@ -496,6 +497,57 @@ NAN_METHOD(IVRSystem::GetRawZeroPoseToStandingAbsoluteTrackingPose)
 
   vr::HmdMatrix34_t matrix = obj->self_->GetRawZeroPoseToStandingAbsoluteTrackingPose();
   info.GetReturnValue().Set(convert(matrix));
+}
+
+//=============================================================================
+/// virtual uint32_t GetSortedTrackedDeviceIndicesOfClass( ETrackedDeviceClass eTrackedDeviceClass, VR_ARRAY_COUNT(unTrackedDeviceIndexArrayCount) vr::TrackedDeviceIndex_t *punTrackedDeviceIndexArray, uint32_t unTrackedDeviceIndexArrayCount, vr::TrackedDeviceIndex_t unRelativeToTrackedDeviceIndex = k_unTrackedDeviceIndex_Hmd ) = 0;
+NAN_METHOD(IVRSystem::GetSortedTrackedDeviceIndicesOfClass)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() < 1 || info.Length() > 2)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number (ETrackedDeviceClass).");
+    return;
+  }
+
+  uint32_t nTrackedDeviceClass = info[0]->Uint32Value();
+  if (nTrackedDeviceClass >= 6)
+  {
+    Nan::ThrowTypeError("Argument[0] was out of enum range (ETrackedDeviceClass).");
+    return;
+  }
+
+  vr::TrackedDeviceIndex_t unRelativeToTrackedDeviceIndex = 0;
+  if (!info[1]->IsUndefined())
+  {
+    if (!info[1]->IsNumber())
+    {
+      Nan::ThrowTypeError("Argument[1] must be a number.");
+      return;
+    }
+    else
+    {
+      unRelativeToTrackedDeviceIndex = info[1]->Uint32Value();
+    }
+  }
+
+  vr::ETrackedDeviceClass eTrackedDeviceClass =
+    static_cast<vr::ETrackedDeviceClass>(nTrackedDeviceClass);
+  TrackedDeviceIndexArray trackedDeviceIndexArray;
+  uint32_t nDeviceIndices = obj->self_->GetSortedTrackedDeviceIndicesOfClass(
+    eTrackedDeviceClass, trackedDeviceIndexArray.data(),
+    static_cast<uint32_t>(trackedDeviceIndexArray.size()),
+    unRelativeToTrackedDeviceIndex
+  );
+
+  info.GetReturnValue().Set(convert(trackedDeviceIndexArray, nDeviceIndices));
 }
 
 //=============================================================================

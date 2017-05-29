@@ -1,6 +1,8 @@
 #ifndef NODE_UTIL_H
 #define NODE_UTIL_H
 
+#include <algorithm>
+#include <limits>
 #include <nan.h>
 #include <openvr.h>
 #include <v8.h>
@@ -149,7 +151,7 @@ v8::Local<v8::Object> convert(const vr::TrackedDevicePose_t &value)
 }
 
 //=============================================================================
-template<size_t N>
+template<uint32_t N>
 v8::Local<v8::Object> convert(const std::array<vr::TrackedDevicePose_t, N> &value)
 {
   Nan::EscapableHandleScope scope;
@@ -157,6 +159,23 @@ v8::Local<v8::Object> convert(const std::array<vr::TrackedDevicePose_t, N> &valu
 
   for (uint32_t idx = 0; idx < N; ++idx)
     Nan::Set(result, idx, convert(value[idx]));
+
+  return scope.Escape(result);
+}
+
+//=============================================================================
+/// Convert either all elements or up to specified range.
+template<uint32_t N>
+v8::Local<v8::Object> convert(
+  const std::array<uint32_t, N> &value,
+  uint32_t numElementsToConvert = std::numeric_limits<uint32_t>::max())
+{
+  Nan::EscapableHandleScope scope;
+  auto result = Nan::New<v8::Array>();
+
+  const uint32_t numElements = std::min(N, numElementsToConvert);
+  for (uint32_t idx = 0; idx < numElements; ++idx)
+    Nan::Set(result, idx, Nan::New<v8::Number>(value[idx]));
 
   return scope.Escape(result);
 }
