@@ -38,9 +38,9 @@ NAN_MODULE_INIT(IVRSystem::Init)
   Nan::SetPrototypeMethod(tpl, "GetSeatedZeroPoseToStandingAbsoluteTrackingPose", GetSeatedZeroPoseToStandingAbsoluteTrackingPose);
   Nan::SetPrototypeMethod(tpl, "GetRawZeroPoseToStandingAbsoluteTrackingPose", GetRawZeroPoseToStandingAbsoluteTrackingPose);
   Nan::SetPrototypeMethod(tpl, "GetSortedTrackedDeviceIndicesOfClass", GetSortedTrackedDeviceIndicesOfClass);
+  Nan::SetPrototypeMethod(tpl, "GetTrackedDeviceActivityLevel", GetTrackedDeviceActivityLevel);
+  Nan::SetPrototypeMethod(tpl, "ApplyTransform", ApplyTransform);
 
-  /// virtual EDeviceActivityLevel GetTrackedDeviceActivityLevel( vr::TrackedDeviceIndex_t unDeviceId ) = 0;
-  /// virtual void ApplyTransform( TrackedDevicePose_t *pOutputPose, const TrackedDevicePose_t *pTrackedDevicePose, const HmdMatrix34_t *pTransform ) = 0;
   /// virtual vr::TrackedDeviceIndex_t GetTrackedDeviceIndexForControllerRole( vr::ETrackedControllerRole unDeviceType ) = 0;
   /// virtual vr::ETrackedControllerRole GetControllerRoleForTrackedDeviceIndex( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
 
@@ -181,7 +181,7 @@ NAN_METHOD(IVRSystem::GetProjectionMatrix)
   float fFarZ = static_cast<float>(info[2]->NumberValue());
   vr::HmdMatrix44_t matrix = obj->self_->GetProjectionMatrix(eEye, fNearZ, fFarZ);
 
-  info.GetReturnValue().Set(convert(matrix));
+  info.GetReturnValue().Set(encode(matrix));
 }
 
 //=============================================================================
@@ -275,7 +275,7 @@ NAN_METHOD(IVRSystem::ComputeDistortion)
 
   if (!success)
     Nan::ThrowError("Distortion coordinates not suitable.");
-  info.GetReturnValue().Set(convert(distortionCoordinates));
+  info.GetReturnValue().Set(encode(distortionCoordinates));
 }
 
 //=============================================================================
@@ -306,7 +306,7 @@ NAN_METHOD(IVRSystem::GetEyeToHeadTransform)
   vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
   vr::HmdMatrix34_t matrix = obj->self_->GetEyeToHeadTransform(eEye);
 
-  info.GetReturnValue().Set(convert(matrix));
+  info.GetReturnValue().Set(encode(matrix));
 }
 
 //=============================================================================
@@ -449,7 +449,7 @@ NAN_METHOD(IVRSystem::GetDeviceToAbsoluteTrackingPose)
     static_cast<uint32_t>(trackedDevicePoseArray.size())
   );
 
-  info.GetReturnValue().Set(convert(trackedDevicePoseArray));
+  info.GetReturnValue().Set(encode(trackedDevicePoseArray));
 }
 
 //=============================================================================
@@ -480,7 +480,7 @@ NAN_METHOD(IVRSystem::GetSeatedZeroPoseToStandingAbsoluteTrackingPose)
   }
 
   vr::HmdMatrix34_t matrix = obj->self_->GetSeatedZeroPoseToStandingAbsoluteTrackingPose();
-  info.GetReturnValue().Set(convert(matrix));
+  info.GetReturnValue().Set(encode(matrix));
 }
 
 //=============================================================================
@@ -496,7 +496,7 @@ NAN_METHOD(IVRSystem::GetRawZeroPoseToStandingAbsoluteTrackingPose)
   }
 
   vr::HmdMatrix34_t matrix = obj->self_->GetRawZeroPoseToStandingAbsoluteTrackingPose();
-  info.GetReturnValue().Set(convert(matrix));
+  info.GetReturnValue().Set(encode(matrix));
 }
 
 //=============================================================================
@@ -547,7 +547,63 @@ NAN_METHOD(IVRSystem::GetSortedTrackedDeviceIndicesOfClass)
     unRelativeToTrackedDeviceIndex
   );
 
-  info.GetReturnValue().Set(convert(trackedDeviceIndexArray, nDeviceIndices));
+  info.GetReturnValue().Set(encode(trackedDeviceIndexArray, nDeviceIndices));
+}
+
+//=============================================================================
+/// virtual EDeviceActivityLevel GetTrackedDeviceActivityLevel( vr::TrackedDeviceIndex_t unDeviceId ) = 0;
+NAN_METHOD(IVRSystem::GetTrackedDeviceActivityLevel)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 1)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsNumber())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a number.");
+    return;
+  }
+
+  uint32_t unDeviceId = info[0]->Uint32Value();
+  vr::EDeviceActivityLevel deviceActivityLevel =
+    obj->self_->GetTrackedDeviceActivityLevel(unDeviceId);
+  info.GetReturnValue().Set(Nan::New<Number>(
+    static_cast<uint32_t>(deviceActivityLevel)));
+}
+
+//=============================================================================
+/// virtual void ApplyTransform( TrackedDevicePose_t *pOutputPose, const TrackedDevicePose_t *pTrackedDevicePose, const HmdMatrix34_t *pTransform ) = 0;
+NAN_METHOD(IVRSystem::ApplyTransform)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 2)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  if (!info[0]->IsObject())
+  {
+    Nan::ThrowTypeError("Argument[0] must be a tracked device pose.");
+    return;
+  }
+
+  if (!info[1]->IsArray())
+  {
+    Nan::ThrowTypeError("Argument[1] must be a 3x4 matrix.");
+    return;
+  }
+
+  const auto trackedDevicePose = decode<vr::TrackedDevicePose_t>(info[0]);
+  const auto transform = decode<vr::HmdMatrix34_t>(info[1]);
+  vr::TrackedDevicePose_t outputPose;
+  obj->self_->ApplyTransform(&outputPose, &trackedDevicePose, &transform);
+  info.GetReturnValue().Set(encode(outputPose));
 }
 
 //=============================================================================

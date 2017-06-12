@@ -203,6 +203,29 @@ describe('IVRSystem', () => {
     });
   });
 
+  describe('#GetTrackedDeviceActivityLevel', () => {
+    it('should take an integer and return an integer', () => {
+      const result = ivrsystem.GetTrackedDeviceActivityLevel(0);
+
+      expect(result).to.satisfy(Number.isInteger);
+    });
+  });
+
+  describe('#ApplyTransform', () => {
+    it('should take a tracked pose and return it if an identity transform is applied', () => {
+      const trackedPose = ivrsystem.GetDeviceToAbsoluteTrackingPose(
+        openvr.ETrackingUniverseOrigin.Standing, 0.0)[0];
+      const identityTransform = [
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+      ];
+      const result = ivrsystem.ApplyTransform(trackedPose, identityTransform);
+
+      expect(result).to.deep.equal(trackedPose);
+    });
+  });
+
   describe('#GetTrackedDeviceClass', () => {
     it('should take an integer and return an integer', () => {
       const result = ivrsystem.GetTrackedDeviceClass(0);
