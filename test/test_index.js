@@ -194,8 +194,8 @@ describe('IVRSystem', () => {
   });
 
   describe('#ResetSeatedZeroPose', () => {
-    it('cannot be tested because it will annoyingly reset the HMD settings', () => {
-      // TODO: figure out how to test this without modifying settings.
+    it('should be a function', () => {
+      expect(ivrsystem.ResetSeatedZeroPose).is.a('function');
     });
   });
 
@@ -268,15 +268,35 @@ describe('IVRSystem', () => {
     });
   });
 
+  describe('#CaptureInputFocus', () => {
+    it('should return a boolean', () => {
+      const result = ivrsystem.CaptureInputFocus();
+      expect(result).to.be.a('boolean');
+    });
+  });
+
+  describe('#ReleaseInputFocus', () => {
+    it('should be able to be called', () => {
+      ivrsystem.ReleaseInputFocus();
+    });
+  });
+
+  describe('#IsInputFocusCapturedByAnotherProcess', () => {
+    it('should return a boolean', () => {
+      const result = ivrsystem.IsInputFocusCapturedByAnotherProcess();
+      expect(result).to.be.a('boolean');
+    });
+  });
+
   describe('#AcknowledgeQuit_Exiting', () => {
-    it('cannot be tested because it requires a dialog popup', () => {
-      // Do nothing.
+    it('should be an available function', () => {
+      expect(ivrsystem.AcknowledgeQuit_Exiting).is.a('function');
     });
   });
 
   describe('#AcknowledgeQuit_UserPrompt', () => {
     it('cannot be tested because it requires a dialog popup', () => {
-      // Do nothing.
+      expect(ivrsystem.AcknowledgeQuit_UserPrompt).is.a('function');
     });
   });
 });
