@@ -274,7 +274,10 @@ NAN_METHOD(IVRSystem::ComputeDistortion)
   bool success = obj->self_->ComputeDistortion(eEye, fU, fV, &distortionCoordinates);
 
   if (!success)
+  {
     Nan::ThrowError("Distortion coordinates not suitable.");
+    return;
+  }
   info.GetReturnValue().Set(encode(distortionCoordinates));
 }
 

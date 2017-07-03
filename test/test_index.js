@@ -13,6 +13,48 @@ describe('openvr', () => {
       openvr.VR_Shutdown();
     });
   });
+
+  describe('#VR_IsHmdPresent()', () => {
+    it('should return a boolean', () => {
+      const result = openvr.VR_IsHmdPresent();
+      expect(result).to.be.a('boolean');
+    });
+  });
+
+  describe('#VR_IsRuntimeInstalled', () => {
+    it('should return a boolean', () => {
+      const result = openvr.VR_IsRuntimeInstalled();
+      expect(result).to.be.a('boolean');
+    });
+  });
+
+  describe('#VR_RuntimePath', () => {
+    it('should return a string', () => {
+      const result = openvr.VR_RuntimePath();
+      expect(result).to.be.a('string');
+    });
+  });
+
+  describe('#VR_GetVRInitErrorAsSymbol', () => {
+    it('should return a string', () => {
+      const result = openvr.VR_GetVRInitErrorAsSymbol(openvr.EVRInitError.Unknown);
+      expect(result).to.be.a('string');
+    });
+  });
+
+  describe('#VR_GetVRInitErrorAsEnglishDescription', () => {
+    it('should return a string', () => {
+      const result = openvr.VR_GetVRInitErrorAsEnglishDescription(openvr.EVRInitError.Unknown);
+      expect(result).to.be.a('string');
+    });
+  });
+
+  describe('#VR_GetInitToken', () => {
+    it('should return a string', () => {
+      const result = openvr.VR_GetInitToken();
+      expect(result).to.satisfy(Number.isInteger);
+    });
+  });
 });
 
 describe('IVRSystem', () => {
@@ -184,7 +226,7 @@ describe('IVRSystem', () => {
   describe('#GetSortedTrackedDeviceIndicesOfClass', () => {
     it('returns a list of integer indices', () => {
       const result = ivrsystem.GetSortedTrackedDeviceIndicesOfClass(
-        openvr.ETrackedDeviceClass.HMD
+        openvr.ETrackedDeviceClass.HMD,
       );
 
       expect(result).to.be.an('array');
@@ -194,7 +236,7 @@ describe('IVRSystem', () => {
 
     it('can take an optional relative index', () => {
       const result = ivrsystem.GetSortedTrackedDeviceIndicesOfClass(
-        openvr.ETrackedDeviceClass.HMD, 0
+        openvr.ETrackedDeviceClass.HMD, 0,
       );
 
       expect(result).to.be.an('array');
