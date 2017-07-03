@@ -268,11 +268,15 @@ describe('IVRSystem', () => {
     });
   });
 
-  describe('#GetTrackedDeviceClass', () => {
-    it('should take an integer and return an integer', () => {
-      const result = ivrsystem.GetTrackedDeviceClass(0);
+  describe('#AcknowledgeQuit_Exiting', () => {
+    it('cannot be tested because it requires a dialog popup', () => {
+      // Do nothing.
+    });
+  });
 
-      expect(result).to.satisfy(Number.isInteger);
+  describe('#AcknowledgeQuit_UserPrompt', () => {
+    it('cannot be tested because it requires a dialog popup', () => {
+      // Do nothing.
     });
   });
 });

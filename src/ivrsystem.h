@@ -105,8 +105,12 @@ private:
   /// virtual bool IsInputFocusCapturedByAnotherProcess() = 0;
   /// virtual uint32_t DriverDebugRequest( vr::TrackedDeviceIndex_t unDeviceIndex, const char *pchRequest, char *pchResponseBuffer, uint32_t unResponseBufferSize ) = 0;
   /// virtual vr::EVRFirmwareError PerformFirmwareUpdate( vr::TrackedDeviceIndex_t unDeviceIndex ) = 0;
+
   /// virtual void AcknowledgeQuit_Exiting() = 0;
+  static NAN_METHOD(AcknowledgeQuit_Exiting);
+
   /// virtual void AcknowledgeQuit_UserPrompt() = 0;
+  static NAN_METHOD(AcknowledgeQuit_UserPrompt);
 
   /// Create a singleton reference to a constructor function.
   static inline Nan::Persistent<v8::Function>& constructor()

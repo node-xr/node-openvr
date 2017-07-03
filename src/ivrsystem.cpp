@@ -633,3 +633,33 @@ NAN_METHOD(IVRSystem::GetTrackedDeviceClass)
   info.GetReturnValue().Set(Nan::New<Number>(
     static_cast<uint32_t>(trackedDeviceClass)));
 }
+
+//=============================================================================
+/// virtual void AcknowledgeQuit_Exiting() = 0;
+NAN_METHOD(IVRSystem::AcknowledgeQuit_Exiting)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 0)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  obj->self_->AcknowledgeQuit_Exiting();
+}
+
+//=============================================================================
+/// virtual void AcknowledgeQuit_UserPrompt() = 0;
+NAN_METHOD(IVRSystem::AcknowledgeQuit_UserPrompt)
+{
+  IVRSystem* obj = ObjectWrap::Unwrap<IVRSystem>(info.Holder());
+
+  if (info.Length() != 0)
+  {
+    Nan::ThrowError("Wrong number of arguments.");
+    return;
+  }
+
+  obj->self_->AcknowledgeQuit_UserPrompt();
+}
