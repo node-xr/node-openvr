@@ -149,6 +149,13 @@ v8::Local<v8::Value> encode(const vr::DistortionCoordinates_t &value)
 
 //=============================================================================
 template<>
+v8::Local<v8::Value> encode(const vr::TrackedDeviceIndex_t &value)
+{
+  return Nan::New<v8::Number>(value);
+}
+
+//=============================================================================
+template<>
 v8::Local<v8::Value> encode(const vr::TrackedDevicePose_t &value)
 {
   Nan::EscapableHandleScope scope;
@@ -236,34 +243,21 @@ vr::TrackedDevicePose_t decode(const v8::Local<v8::Value> value)
   return result;
 }
 
-//=============================================================================
-template<uint32_t N>
-v8::Local<v8::Value> encode(const std::array<vr::TrackedDevicePose_t, N> &value)
-{
+template<typename T>
+v8::Local<v8::Value> encode(const T &value, uint32_t nDeviceIndices) {
   Nan::EscapableHandleScope scope;
   auto result = Nan::New<v8::Array>();
-
-  for (uint32_t idx = 0; idx < N; ++idx)
+  
+  const uint32_t numElements = std::min(static_cast<uint32_t>(value.size()), nDeviceIndices);
+  for (uint32_t idx = 0; idx < numElements; ++idx)
     Nan::Set(result, idx, encode(value[idx]));
-
-  return scope.Escape(result);
+  
+  return scope.Escape(result);  
 }
 
-//=============================================================================
-/// Encode either all elements or up to specified range.
-template<uint32_t N>
-v8::Local<v8::Value> encode(
-  const std::array<uint32_t, N> &value,
-  uint32_t numElementsToencode = std::numeric_limits<uint32_t>::max())
-{
-  Nan::EscapableHandleScope scope;
-  auto result = Nan::New<v8::Array>();
-
-  const uint32_t numElements = std::min(N, numElementsToencode);
-  for (uint32_t idx = 0; idx < numElements; ++idx)
-    Nan::Set(result, idx, Nan::New<v8::Number>(value[idx]));
-
-  return scope.Escape(result);
+template<typename T>
+v8::Local<v8::Value> encode(const T &value) {
+  return encode(value, value.size());
 }
 
 #endif // NODE_UTIL_H
