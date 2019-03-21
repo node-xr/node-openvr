@@ -251,8 +251,8 @@ v8::Local<v8::Value> encode(const T &value, uint32_t nDeviceIndices) {
   const uint32_t numElements = std::min(static_cast<uint32_t>(value.size()), nDeviceIndices);
   for (uint32_t idx = 0; idx < numElements; ++idx)
     Nan::Set(result, idx, encode(value[idx]));
-  
-  return scope.Escape(result);  
+
+  return scope.Escape(result);
 }
 
 template<typename T>
