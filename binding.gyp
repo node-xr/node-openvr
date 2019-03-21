@@ -13,10 +13,6 @@
       'defines': [
         'VERSION=0.4.6',
       ],
-      'cflags': [
-        '-std=c++11',
-        '-stdlib=libc++'
-      ],
       'sources': [
         'src/bindings.cpp',
         'src/ivrsystem.cpp',
@@ -24,12 +20,12 @@
       ],
       'include_dirs': [
         "<!(node -e \"require('nan')\")",
-        './deps/openvr/headers',
+        '<(module_root_dir)/deps/openvr/headers',
       ],
       'conditions': [
         ['OS=="linux"', {
-          'library_dirs': ['./deps/openvr/lib/linux64'],
-          'libraries': ['libopenvr_api.so'],
+          'library_dirs': ['<(module_root_dir)/deps/openvr/lib/linux64'],
+          'libraries': ['<(module_root_dir)/deps/openvr/lib/linux64/libopenvr_api.so'],
           'copies':
           [
             {
@@ -39,7 +35,7 @@
           ],
         }],
         ['OS=="mac"', {
-          'library_dirs': ['./deps/openvr/lib/osx32'],
+          'library_dirs': ['<(module_root_dir)/deps/openvr/lib/osx32'],
           'libraries': ['libopenvr_api.dylib'],
           'copies':
           [
@@ -50,7 +46,7 @@
           ],
         }],
         ['OS=="win"', {
-          'library_dirs': ['./deps/openvr/lib/win64'],
+          'library_dirs': ['<(module_root_dir)/deps/openvr/lib/win64'],
           'libraries': ['openvr_api.lib'],
           'defines' : ['WIN32_LEAN_AND_MEAN', 'VC_EXTRALEAN', 'NOMINMAX'],
           'msvs_settings' : {
