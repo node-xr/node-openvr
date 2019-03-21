@@ -21,10 +21,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/psigen/node-openvr.git"
+    "url": "git+https://github.com/node-xr/node-openvr.git"
   },
   "bugs": {
-    "url": "https://github.com/psigen/node-openvr/issues"
+    "url": "https://github.com/node-xr/node-openvr/issues"
   },
   "main": "index.js",
   "scripts": {
