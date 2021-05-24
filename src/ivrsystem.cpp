@@ -160,7 +160,7 @@ NAN_METHOD(IVRSystem::GetProjectionMatrix)
     return;
   }
 
-  uint32_t nEye = info[0]->Uint32Value();
+  uint32_t nEye = Nan::To<int32_t>(info[0]).ToChecked();
   if (nEye >= 2)
   {
     Nan::ThrowTypeError("Argument[0] was out of enum range (EVREye).");
@@ -180,8 +180,8 @@ NAN_METHOD(IVRSystem::GetProjectionMatrix)
   }
 
   vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
-  float fNearZ = static_cast<float>(info[1]->NumberValue());
-  float fFarZ = static_cast<float>(info[2]->NumberValue());
+  float fNearZ = static_cast<float>(Nan::To<int32_t>(info[1]).ToChecked());
+  float fFarZ = static_cast<float>(Nan::To<int32_t>(info[2]).ToChecked());
   vr::HmdMatrix44_t matrix = obj->self_->GetProjectionMatrix(eEye, fNearZ, fFarZ);
 
   info.GetReturnValue().Set(encode(matrix));
@@ -205,7 +205,7 @@ NAN_METHOD(IVRSystem::GetProjectionRaw)
     return;
   }
 
-  uint32_t nEye = info[0]->Uint32Value();
+  uint32_t nEye = Nan::To<int32_t>(info[0]).ToChecked();
   if (nEye >= 2)
   {
     Nan::ThrowTypeError("Argument[0] was out of enum range (EVREye).");
@@ -251,7 +251,7 @@ NAN_METHOD(IVRSystem::ComputeDistortion)
     return;
   }
 
-  uint32_t nEye = info[0]->Uint32Value();
+  uint32_t nEye = Nan::To<int32_t>(info[0]).ToChecked();
   if (nEye >= 2)
   {
     Nan::ThrowTypeError("Argument[0] was out of enum range (EVREye).");
@@ -271,8 +271,8 @@ NAN_METHOD(IVRSystem::ComputeDistortion)
   }
 
   vr::EVREye eEye = static_cast<vr::EVREye>(nEye);
-  float fU = static_cast<float>(info[1]->NumberValue());
-  float fV = static_cast<float>(info[2]->NumberValue());
+  float fU = static_cast<float>(Nan::To<int32_t>(info[1]).ToChecked());
+  float fV = static_cast<float>(Nan::To<int32_t>(info[2]).ToChecked());
   vr::DistortionCoordinates_t distortionCoordinates;
   bool success = obj->self_->ComputeDistortion(eEye, fU, fV, &distortionCoordinates);
 
@@ -302,7 +302,7 @@ NAN_METHOD(IVRSystem::GetEyeToHeadTransform)
     return;
   }
 
-  uint32_t nEye = info[0]->Uint32Value();
+  uint32_t nEye = Nan::To<int32_t>(info[0]).ToChecked();
   if (nEye >= 2)
   {
     Nan::ThrowTypeError("Argument[0] was out of enum range (EVREye).");
@@ -411,7 +411,7 @@ NAN_METHOD(IVRSystem::SetDisplayVisibility)
     return;
   }
 
-  bool bIsVisibleOnDesktop = info[0]->BooleanValue();
+  bool bIsVisibleOnDesktop = Nan::To<bool>(info[0]).FromJust();
   bool bSuccess = obj->self_->SetDisplayVisibility(bIsVisibleOnDesktop);
   info.GetReturnValue().Set(Nan::New<Boolean>(bSuccess));
 }
@@ -434,7 +434,7 @@ NAN_METHOD(IVRSystem::GetDeviceToAbsoluteTrackingPose)
     return;
   }
 
-  uint32_t nOrigin = info[0]->Uint32Value();
+  uint32_t nOrigin = Nan::To<int32_t>(info[0]).ToChecked();
   if (nOrigin >= 3)
   {
     Nan::ThrowTypeError("Argument[0] was out of enum range (ETrackingUniverseOrigin).");
@@ -448,7 +448,7 @@ NAN_METHOD(IVRSystem::GetDeviceToAbsoluteTrackingPose)
   }
 
   vr::ETrackingUniverseOrigin eOrigin = static_cast<vr::ETrackingUniverseOrigin>(nOrigin);
-  float fPredictedSecondsToPhotonsFromNow = static_cast<float>(info[1]->NumberValue());
+  float fPredictedSecondsToPhotonsFromNow = static_cast<float>(Nan::To<int32_t>(info[1]).FromJust());
   TrackedDevicePoseArray trackedDevicePoseArray;
   obj->self_->GetDeviceToAbsoluteTrackingPose(
     eOrigin, fPredictedSecondsToPhotonsFromNow, trackedDevicePoseArray.data(),
@@ -523,7 +523,7 @@ NAN_METHOD(IVRSystem::GetSortedTrackedDeviceIndicesOfClass)
     return;
   }
 
-  uint32_t nTrackedDeviceClass = info[0]->Uint32Value();
+  uint32_t nTrackedDeviceClass = Nan::To<int32_t>(info[0]).ToChecked();
   if (nTrackedDeviceClass >= 6)
   {
     Nan::ThrowTypeError("Argument[0] was out of enum range (ETrackedDeviceClass).");
@@ -540,7 +540,7 @@ NAN_METHOD(IVRSystem::GetSortedTrackedDeviceIndicesOfClass)
     }
     else
     {
-      unRelativeToTrackedDeviceIndex = info[1]->Uint32Value();
+      unRelativeToTrackedDeviceIndex = Nan::To<int32_t>(info[1]).ToChecked();
     }
   }
 
@@ -574,7 +574,7 @@ NAN_METHOD(IVRSystem::GetTrackedDeviceActivityLevel)
     return;
   }
 
-  uint32_t unDeviceId = info[0]->Uint32Value();
+  uint32_t unDeviceId = Nan::To<int32_t>(info[0]).ToChecked();
   vr::EDeviceActivityLevel deviceActivityLevel =
     obj->self_->GetTrackedDeviceActivityLevel(unDeviceId);
   info.GetReturnValue().Set(Nan::New<Number>(
@@ -630,7 +630,7 @@ NAN_METHOD(IVRSystem::GetTrackedDeviceClass)
     return;
   }
 
-  uint32_t unDeviceIndex = info[0]->Uint32Value();
+  uint32_t unDeviceIndex = Nan::To<int32_t>(info[0]).ToChecked();
   vr::ETrackedDeviceClass trackedDeviceClass =
     obj->self_->GetTrackedDeviceClass(unDeviceIndex);
   info.GetReturnValue().Set(Nan::New<Number>(

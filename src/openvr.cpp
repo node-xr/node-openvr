@@ -23,7 +23,7 @@ NAN_METHOD(VR_Init)
     return;
   }
 
-  uint32_t applicationType = info[0]->Uint32Value();
+  uint32_t applicationType = Nan::To<int32_t>(info[0]).ToChecked();
   // TODO: is there a better way to do this?
   constexpr uint32_t applicationTypeMax = vr::VRApplication_Max;
   if (applicationType >= applicationTypeMax)
@@ -122,7 +122,7 @@ NAN_METHOD(VR_GetVRInitErrorAsSymbol)
     return;
   }
 
-  uint32_t nError = info[0]->Uint32Value();
+  uint32_t nError = Nan::To<int32_t>(info[0]).ToChecked();
   vr::EVRInitError eError = static_cast<vr::EVRInitError>(nError);
   const char *result = vr::VR_GetVRInitErrorAsSymbol(eError);
   info.GetReturnValue().Set(Nan::New<String>(result).ToLocalChecked());
@@ -144,7 +144,7 @@ NAN_METHOD(VR_GetVRInitErrorAsEnglishDescription)
     return;
   }
 
-  uint32_t nError = info[0]->Uint32Value();
+  uint32_t nError = Nan::To<int32_t>(info[0]).ToChecked();
   vr::EVRInitError eError = static_cast<vr::EVRInitError>(nError);
   const auto result = vr::VR_GetVRInitErrorAsEnglishDescription(eError);
   info.GetReturnValue().Set(Nan::New<String>(result).ToLocalChecked());

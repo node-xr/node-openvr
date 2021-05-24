@@ -1,4 +1,4 @@
-const openvr = require('bindings')('openvr');
+const openvr = require("bindings")("openvr");
 
 openvr.EVRInitError = {
   None: 0,
